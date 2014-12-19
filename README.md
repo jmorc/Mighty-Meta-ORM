@@ -1,10 +1,10 @@
 # Mighty Meta ORM
 
-This project employs meta-programming to create an object-relational mapping (ORM) system. 
+This project employs metaprogramming to create an object-relational mapping (ORM) system. 
 
 ## Features of interest:
 
-* The `SQLObject` class plays the role of the `ActiveRecord::Base` class. To get started, the class method `::columns` queries the sqlite3 database and return an array of symbols representing the column names. 
+The `SQLObject` class plays the role of the `ActiveRecord::Base` class used in Rails. For example, the class method `::columns` (below) queries the sqlite3 database and returns an array of symbols corresponding to database column names. 
 
 ```ruby
   def self.columns
@@ -15,7 +15,7 @@ This project employs meta-programming to create an object-relational mapping (OR
   end
 ```
 
-* Then, metaprogramming (Ruby's `define_method`) is used to generate setter and getter methods for the data columns:
+Metaprogramming (Ruby's `define_method`) is used to generate setter and getter methods for the data columns whenever a `SQLObject` is finalized:
 
 ```ruby
   def self.finalize!
@@ -28,7 +28,7 @@ This project employs meta-programming to create an object-relational mapping (OR
   end
 ```  
 
-* `define_method` is also used to generate associations.  For example, if a Cat `belongs_to` a Human, and a Human `has_many` Cats, the association methods, `Cat.human` and `Human.cat` are generated automatically by metaprogramming:
+`define_method` is also used to generate associations.  In this example, associations exist between `Human`, `Cat`, and `House` model classes (seed data is defined in `cats.sql`). If a Cat `belongs_to` a Human, and a Human `has_many` Cats, the association methods, `Cat.human` and `Human.cats` are generated automatically by metaprogramming:
 
 ```ruby
   def belongs_to(name, options = {})
@@ -66,13 +66,13 @@ These components are used to define the `belongs_to` and `has_many` methods, use
 
 * `AssocOptions` and child classes `HasManyOptions` and `BelongsToOptions` are used to provide the default foreign key, primary key, and class name for an association.  They also permit the defaults to be overridden.  
 
-* `belongs_to` and `has_many` both use the Ruby method `define_method(name)` to generate the association.  These generate associations called `name` that returns the associated data object(s) using the `where` method from the `Searchable` module. 
+* `belongs_to` and `has_many` both use the Ruby method `define_method(name)` to generate the association.  These generate associations (called `name`) that returns the associated data object(s) using the `where` method from the `Searchable` module. 
 
 * `assoc_options` is a class instance method that stores the options related to a `belongs_to` association.  This is required for `has_one_through` associations, as described below.   
 
 ### `Associatable_one_through` module 
 
-This module adds the `has_one_through` type of association. This method again uses `define_method` to generate the `has_one_through` association method on the model class.  To generate the association, two `belongs_to` associations must be generated with their options stored in `assoc_options`. These options are retrieved and used to generate a SQL database query to create and return the correct data object.
+This module adds the `has_one_through` type of association. This method again uses `define_method` to generate the `has_one_through` association method on the model class.  To generate the association, two `belongs_to` associations must be generated, and their options stored in `assoc_options`. These options are retrieved and used to generate a SQL database query. The query creates and returns the correct data object.
   
 
 
