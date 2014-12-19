@@ -31,6 +31,7 @@ class SQLObject
   end
 
   def self.all
+    puts "calling all"
     query = DBConnection.execute(<<-SQL)
     SELECT *
     FROM "#{self.table_name}"
@@ -43,14 +44,13 @@ class SQLObject
   end
 
   def self.find(id)
+    puts "calling find(id)"
     query = DBConnection.execute(<<-SQL)
     SELECT *
     FROM "#{self.table_name}"
     WHERE id = #{id}
     SQL
     found_obj = self.new(query.first)
-    
-    # found_obj
   end
 
   def initialize(params = {})

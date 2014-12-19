@@ -20,84 +20,59 @@ end
 
 class BelongsToOptions < AssocOptions
   def initialize(name, options = {})
-    defaults = {}
-    defaults[:foreign_key] = f_key(name)  
-    defaults[:class_name] = c_name(name)
-    defaults[:primary_key] = :id
-    options = defaults.merge(options)
-    
-    @foreign_key = options[:foreign_key]
-    @class_name = options[:class_name]
-    @primary_key = options[:primary_key]
+    @foreign_key = options[:foreign_key] || f_key(name)
+    @class_name = options[:class_name] || name.to_s.camelcase
+    @primary_key = options[:primary_key] || :id
   end
   
   def f_key(name)
     small_name = name.to_s.downcase
     f_key = small_name + '_id'
     f_key.to_sym
-  end
-  
-  def c_name(name)
-    name.to_s.camelcase
   end
 end
 
 class HasManyOptions < AssocOptions
   def initialize(name, self_class_name, options = {})
-    defaults = {}
-    defaults[:foreign_key] = f_key(self_class_name)  
-    defaults[:class_name] = c_name(name)
-    defaults[:primary_key] = :id
-    options = defaults.merge(options)
-    
-    @foreign_key = options[:foreign_key]
-    @class_name = options[:class_name]
-    @primary_key = options[:primary_key]
+    @foreign_key = options[:foreign_key] || "#{self_class_name.underscore}_id".to_sym
+    @class_name = options[:class_name] || name.to_s.singularize.camelcase
+    @primary_key = options[:primary_key] || :id
   end
-  
-  def f_key(name)
-    small_name = name.to_s.downcase
-    f_key = small_name + '_id'
-    f_key.to_sym
-  end
-  
-  def c_name(name)
-    name.to_s.singularize.camelcase
-  end
-  
 end
 
 module Associatable
-  # Phase IIIb
+  
   def belongs_to(name, options = {})
-    options = BelongsToOptions.new(name, options) # make a BelongsToOptions obj
-    
+    options = BelongsToOptions.new(name, options) 
+    # @assoc_options = { foreign_key: options.foreign_key,
+#                        class_name: options.class_name,
+#                        primary_key: options.primary_key }
+
+    assoc_options[name] = options
     define_method(name) do 
-      f_id_value = self.send(:id)
-     # f_keyname = options.f_key(name)
+      id_value = self.send(:id)
       model_class = options.model_class
-      params = { id: f_id_value }
-      # puts "f_keyname: #{f_keyname}, model_class: #{model_class}, f_id_value: #{f_id_value}"
+      params = { options.primary_key => id_value }
       data_object = model_class.where(params)
       data_object.first
     end
   end
 
   def has_many(name, options = {})
-    options = HasManyOptions.new(name, options) # make a HasManyOptions obj
-    
+    self_class_name = self.to_s
+    options = HasManyOptions.new(name, self_class_name, options) 
     define_method(name) do 
-      f_id_value = self.send(:id)
-      f_keyname = options.f_key(name)
       model_class = options.model_class
-      params = { f_keyname.to_sym => f_id_value }
-      # puts "f_keyname: #{f_keyname}, model_class: #{model_class}, f_id_value: #{f_id_value}"
+      f_id_value = self.send(:id)
+      f_keyname = options.foreign_key
+      params = { f_keyname.to_sym =>  f_id_value }
+    
       data_object = model_class.where(params)
-      data_object.first
     end
   end
 
   def assoc_options
+    @assoc_options ||= {}
     # Wait to implement this in Phase IVa. Modify `belongs_to`, too.
   end
 end
@@ -105,3 +80,5 @@ end
 class SQLObject
   extend Associatable
 end
+
+
