@@ -2,9 +2,9 @@
 
 This project employs metaprogramming to create an object-relational mapping (ORM) system. 
 
-## Features of interest:
+## Three features of interest:
 
-The `SQLObject` class plays the role of the `ActiveRecord::Base` class used in Rails. For example, the class method `::columns` (below) queries the sqlite3 database and returns an array of symbols corresponding to database column names. 
+**1. The `SQLObject` class plays the role of the `ActiveRecord::Base` class used in Rails.** For example, the class method `::columns` (below) queries the sqlite3 database and returns an array of symbols corresponding to database column names. 
 
 ```ruby
   def self.columns
@@ -15,7 +15,7 @@ The `SQLObject` class plays the role of the `ActiveRecord::Base` class used in R
   end
 ```
 
-Metaprogramming (Ruby's `define_method`) is used to generate setter and getter methods for the data columns whenever a `SQLObject` is finalized:
+**2. Metaprogramming (Ruby's `define_method`) is used to generate setter and getter methods for the data columns whenever a `SQLObject` is finalized:**
 
 ```ruby
   def self.finalize!
@@ -28,7 +28,7 @@ Metaprogramming (Ruby's `define_method`) is used to generate setter and getter m
   end
 ```  
 
-`define_method` is also used to generate associations.  In this example, associations exist between `Human`, `Cat`, and `House` model classes (seed data is defined in `cats.sql`). If a Cat `belongs_to` a Human, and a Human `has_many` Cats, the association methods, `Cat.human` and `Human.cats` are generated automatically by metaprogramming:
+**3. `define_method` is also used to generate associations.**  In this example, associations exist between `Human`, `Cat`, and `House` model classes (seed data is defined in `cats.sql`). If a Cat `belongs_to` a Human, and a Human `has_many` Cats, the association methods, `Cat.human` and `Human.cats` are generated automatically by metaprogramming:
 
 ```ruby
   def belongs_to(name, options = {})
