@@ -12,7 +12,6 @@ class SQLObject
 
   def self.finalize!
     cols = self.columns
-
     cols.each do |col|
       setter_name = col.to_s + '='
       define_method(col) { self.attributes[col] }
