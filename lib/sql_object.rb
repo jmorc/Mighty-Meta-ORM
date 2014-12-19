@@ -2,9 +2,6 @@ require_relative 'db_connection'
 require 'active_support/inflector'
 require_relative 'pluralize_fix'
 
-# NB: the attr_accessor we wrote in phase 0 is NOT used in the rest
-# of this project. It was only a warm up.
-
 class SQLObject
   def self.columns
     column_query = DBConnection::execute2(<<-SQL)
@@ -32,7 +29,6 @@ class SQLObject
   end
 
   def self.all
-    puts "calling all"
     query = DBConnection.execute(<<-SQL)
     SELECT *
     FROM "#{self.table_name}"
@@ -45,7 +41,6 @@ class SQLObject
   end
 
   def self.find(id)
-    puts "calling find(id)"
     query = DBConnection.execute(<<-SQL)
     SELECT *
     FROM "#{self.table_name}"

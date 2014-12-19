@@ -1,14 +1,18 @@
-<<<<<<< HEAD
-# Active Record Lite!
+# Mighty Meta ORM
 
-In this App Academy project we built a custom version of Active Record.
+This project explores the us of meta-programming to create an object-relational mapping (ORM) system. 
 
-Instructions for the project may be found [here][instructions].
+## Some of the key features include:
 
-[instructions]: https://github.com/appacademy/sql-curriculum/blob/master/projects/w3d5-build-your-own-ar.md
-=======
-ActiveRecord-Lite
-=================
+* Associations
+*
+## Project details:
+* The 'SQLObject' class
 
-Custom version of ActiveRecord
->>>>>>> 3539ff118636f6b14128d584b237098e70587303
+This class contains the functionality to create objects representing SQL data. The 'SQLObject' resembles the 'ActiveRecord::Base' class, used in as the parent class for models in a Rails app.  Features of the 'SQLObject' include:
+** '::all'
+** '::find'
+** '#insert'
+** '#update'
+** '#save'
+    
