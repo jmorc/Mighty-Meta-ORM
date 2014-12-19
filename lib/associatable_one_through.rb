@@ -6,7 +6,6 @@ module Associatable
   def has_one_through(name, through_name, source_name)
     define_method(name) do
       id_value = self.send(:id)
-      
       through_options = self.class.assoc_options[through_name]
       source_options = through_options.model_class.assoc_options[source_name]
       source_table = source_options.class_name.tableize

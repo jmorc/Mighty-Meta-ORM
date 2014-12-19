@@ -62,7 +62,6 @@ module Associatable
       f_id_value = self.send(:id)
       f_keyname = options.foreign_key
       params = { f_keyname.to_sym =>  f_id_value }
-    
       data_object = model_class.where(params)
     end
   end
