@@ -1,7 +1,7 @@
 require_relative '02_searchable'
 require 'active_support/inflector'
+require_relative 'pluralize_fix'
 
-# Phase IIIa
 class AssocOptions
   attr_accessor(
     :foreign_key,
@@ -14,7 +14,7 @@ class AssocOptions
   end
   
   def table_name
-    model_class.to_s.downcase + "s"
+    model_class.to_s.tableize  
   end
 end
 
@@ -44,10 +44,6 @@ module Associatable
   
   def belongs_to(name, options = {})
     options = BelongsToOptions.new(name, options) 
-    # @assoc_options = { foreign_key: options.foreign_key,
-#                        class_name: options.class_name,
-#                        primary_key: options.primary_key }
-
     assoc_options[name] = options
     define_method(name) do 
       id_value = self.send(:id)
@@ -73,7 +69,6 @@ module Associatable
 
   def assoc_options
     @assoc_options ||= {}
-    # Wait to implement this in Phase IVa. Modify `belongs_to`, too.
   end
 end
 
